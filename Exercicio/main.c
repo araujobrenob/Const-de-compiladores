@@ -1,5 +1,7 @@
+#include "analisadorsintatico.c"
+
 int main(){
-    int simbolo_lido; 
+    obtenha_simbolo();
 
 
 
