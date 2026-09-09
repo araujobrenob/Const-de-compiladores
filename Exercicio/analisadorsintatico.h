@@ -6,3 +6,4 @@ void PRIMARIO();
 void FATOR();
 void EXPR();
 void TERMO();
+void erro(char *mensagem);

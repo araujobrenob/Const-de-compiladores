@@ -1,12 +1,7 @@
-#include "analisadorsintatico.c"
+#include <stdio.h>
+#include "analisadorsintatico.h"
 
-int main(){
-    obtenha_simbolo();
-
-
-
-
-
-
+int main() {
+    analisador_sintatico();
     return 0;
 }

@@ -48,9 +48,11 @@ void obtenha_simbolo(){
     else {
         printf("\nCARACTER INVALIDO!");
     }
+    printf("\nToken reconhecido: %d\n", simbolo_lido);
 }
 
 void analisador_sintatico(){
+    printf("\n----INICIO DA ANALISE SINTATICA----");
     obtenha_simbolo();
     EXPR();
     if(simbolo_lido == FIM){
@@ -62,6 +64,7 @@ void analisador_sintatico(){
 }
 
 void PRIMARIO(){
+    printf("\n-PRIMARIO\n");
     if(simbolo_lido == IDENT){
         obtenha_simbolo();
     }
@@ -83,6 +86,7 @@ void PRIMARIO(){
 }
 
 void FATOR(){
+    printf("\n-FATOR\n");
     PRIMARIO();
     if(simbolo_lido == POTENCIA){
         obtenha_simbolo();
@@ -91,6 +95,7 @@ void FATOR(){
 }
 
 void TERMO(){
+    printf("\n-TERMO\n");
     FATOR();
     if(simbolo_lido == MULT){
         obtenha_simbolo();
@@ -99,6 +104,7 @@ void TERMO(){
 }
 
 void EXPR(){
+    printf("\n-EXPR\n");
     TERMO();
     if(simbolo_lido == MAIS){
         obtenha_simbolo();
