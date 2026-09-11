@@ -1,81 +1,79 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define IDENT 1
-#define NUMERO 2
-#define MAIS 3
-#define MULT 4
-#define POTENCIA 5
-#define ABRE_PAR 6
-#define FECHA_PAR 7
-#define FIM 8
 #include "analisadorsintatico.h"
 
 int simbolo_lido;
 
-void obtenha_simbolo(){
+void obtenha_simbolo() {
     char a = getchar();
-    while(a == '\n' || a == '\t' || a == ' '){
+
+    while (a == ' ' || a == '\t' || a == '\r') {
         a = getchar();
     }
 
-    if(a >= '0' && a <= '9'){
+    if (a >= '0' && a <= '9') {
+        while ((a = getchar()) >= '0' && a <= '9');
+        ungetc(a, stdin);
         simbolo_lido = NUMERO;
     }
-    else if((a >= 'a' && a <= 'z') || (a >= 'A' && a <= 'Z')){
+    else if ((a >= 'a' && a <= 'z') || (a >= 'A' && a <= 'Z')) {
+        while (((a = getchar()) >= 'a' && a <= 'z') || 
+               (a >= 'A' && a <= 'Z') || 
+               (a >= '0' && a <= '9'));
+        ungetc(a, stdin);
         simbolo_lido = IDENT;
     }
-    else if(a == '+'){
+    else if (a == '+') {
         simbolo_lido = MAIS;
     }
-    else if(a == '*'){
+    else if (a == '*') {
         char proximo = getchar();
-        if(proximo == '*'){
+        if (proximo == '*') {
             simbolo_lido = POTENCIA;
         } else {
             ungetc(proximo, stdin);
             simbolo_lido = MULT;
         }
     }
-    else if(a == '('){
+    else if (a == '(') {
         simbolo_lido = ABRE_PAR;
     }
-    else if(a == ')'){
+    else if (a == ')') {
         simbolo_lido = FECHA_PAR;
     }
-    else if(a == '\n' || a == EOF){
+    else if (a == '\n' || a == EOF) {
         simbolo_lido = FIM;
     }
     else {
-        printf("\nCARACTER INVALIDO!");
+        printf("\nCARACTER INVALIDO: %c\n", a);
+        simbolo_lido = -1;
     }
+
     printf("\nToken reconhecido: %d\n", simbolo_lido);
 }
 
-void analisador_sintatico(){
-    printf("\n----INICIO DA ANALISE SINTATICA----");
+void analisador_sintatico() {
+    printf("\n---INICIO DA ANALISE SINTATICA---\n");
     obtenha_simbolo();
     EXPR();
-    if(simbolo_lido == FIM){
+
+    if (simbolo_lido == FIM) {
         printf("\nExpressao valida\n");
     } else {
         printf("\nSimbolo inesperado!\n");
-        return;
     }
 }
 
-void PRIMARIO(){
+void PRIMARIO() {
     printf("\n-PRIMARIO\n");
-    if(simbolo_lido == IDENT){
+    if (simbolo_lido == IDENT || simbolo_lido == NUMERO) {
         obtenha_simbolo();
     }
-    else if(simbolo_lido == NUMERO){
-        obtenha_simbolo();
-    }
-    else if(simbolo_lido == ABRE_PAR){
+    else if (simbolo_lido == ABRE_PAR) {
         obtenha_simbolo();
         EXPR();
-        if(simbolo_lido != FECHA_PAR){
-            erro("Falta o ')");
+        if (simbolo_lido != FECHA_PAR) {
+            erro("Falta o ')'");
         } else {
             obtenha_simbolo();
         }
@@ -85,28 +83,28 @@ void PRIMARIO(){
     }
 }
 
-void FATOR(){
+void FATOR() {
     printf("\n-FATOR\n");
     PRIMARIO();
-    if(simbolo_lido == POTENCIA){
+    if (simbolo_lido == POTENCIA) {
         obtenha_simbolo();
         FATOR();
     }
 }
 
-void TERMO(){
+void TERMO() {
     printf("\n-TERMO\n");
     FATOR();
-    if(simbolo_lido == MULT){
+    if (simbolo_lido == MULT) {
         obtenha_simbolo();
         TERMO();
     }
 }
 
-void EXPR(){
+void EXPR() {
     printf("\n-EXPR\n");
     TERMO();
-    if(simbolo_lido == MAIS){
+    if (simbolo_lido == MAIS) {
         obtenha_simbolo();
         EXPR();
     }
@@ -114,5 +112,5 @@ void EXPR(){
 
 void erro(char *mensagem) {
     printf("\nerro sintatico no programa: %s\n", mensagem);
-    exit(1); 
+    exit(1);
 }
